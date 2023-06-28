@@ -14,6 +14,11 @@ enum Load {
         return decoder.decode(data)
     }
     
+    static func loadTiktokenBpe(fileURL: URL, decoder: FileDecoder = FileDecoder()) -> [[UInt8]: Int] {
+        guard let data = fetch(fileURL: fileURL) else { return [:] }
+        return decoder.decode(data)
+    }
+    
     static func dataGymToMergeableBpeRanks(vocabBpeFile: String, encoderJsonFile: String? = nil) async -> [[UInt8]: Int] {
         var rankToIntByte = (0..<exponentialPow).filter({ Character($0).isPrintable && !Character($0).isWhitespace })
         var dataGymByteToByte: [Character: Int] = toDictionary(array: rankToIntByte)
@@ -105,6 +110,12 @@ private extension Load {
 
             return data
         }
+    }
+    
+    // Fetch data
+    static func fetch(fileURL: URL) -> Data? {
+        let data = try? Data(contentsOf: fileURL)
+        return data
     }
     
     static func getVocab(url: String) async -> [(String, String)] {

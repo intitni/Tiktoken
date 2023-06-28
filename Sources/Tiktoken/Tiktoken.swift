@@ -14,9 +14,13 @@ public struct Tiktoken {
         return encoding
     }
     
-//    public func getEncoding(for vocab: Vocab) -> Encoding? {
-//        return nil
-//    }
+    public func getEncoding(for vocab: Vocab, name: String, fileURL: URL) -> Encoding? {
+        guard let regex = try? NSRegularExpression(pattern: vocab.pattern) else { return nil }
+        let encoder = loadRanks(fileURL)
+        let encoding = Encoding(name: name, regex: regex, mergeableRanks: encoder, specialTokens: vocab.specialTokens)
+        return encoding
+    }
+    
 //    
 //    public func register() {
 //        // TODO: Register model and Encoding
@@ -34,5 +38,9 @@ private extension Tiktoken {
         } else {
             return await Load.loadTiktokenBpe(url: vocab.url)
         }
+    }
+    
+    func loadRanks(_ fileURL: URL) -> [[UInt8]: Int] {
+        Load.loadTiktokenBpe(fileURL: fileURL)
     }
 }
